@@ -1,6 +1,9 @@
 #!/bin/bash
 # Daily GitHub sync for coco-workspace
-cd /Users/lychees/.openclaw/workspace
+set -e
+
+WORKSPACE="/Users/lychees/.openclaw/workspace"
+cd "$WORKSPACE"
 
 # Create/update today's memory file
 TODAY=$(date '+%Y-%m-%d')
@@ -24,4 +27,7 @@ GIT_AUTHOR_NAME="lychee23mxp" \
 GIT_COMMITTER_NAME="lychee23mxp" \
 git commit -m "daily sync: ${TODAY}" --allow-empty
 
+git pull --rebase origin main
 git push origin main
+
+echo "✅ daily sync ok: ${TODAY}"
