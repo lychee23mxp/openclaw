@@ -1,0 +1,325 @@
+:root {
+  --bg-0: #0b0814;
+  --bg-1: #1a1228;
+  --paper: #f3e8cf;
+  --paper-edge: #d9c79e;
+  --ink: #1c1610;
+  --accent: #c8553d;
+  --accent-2: #588b8b;
+  --gold: #d4a637;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background:
+    radial-gradient(ellipse at top, var(--bg-1), var(--bg-0) 60%),
+    var(--bg-0);
+  color: var(--paper);
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+a { color: var(--gold); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid rgba(243, 232, 207, 0.12);
+}
+
+.brand { display: flex; align-items: center; gap: 0.6rem; }
+.brand-mark { color: var(--accent); font-size: 1.4rem; }
+.brand-name {
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.2em;
+  font-size: 0.95rem;
+}
+
+.views { display: flex; gap: 0.5rem; }
+.view-btn {
+  background: transparent;
+  border: 1px solid rgba(243, 232, 207, 0.25);
+  color: var(--paper);
+  padding: 0.45rem 0.9rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border-radius: 2px;
+  transition: background 0.2s, border-color 0.2s;
+}
+.view-btn:hover { border-color: var(--gold); }
+.view-btn.active { background: var(--gold); color: var(--bg-0); border-color: var(--gold); }
+
+main { padding: 1rem; }
+.view { display: none; }
+.view.active { display: block; }
+
+/* ---- Flipbook ---- */
+.stage {
+  perspective: 2400px;
+  display: flex;
+  justify-content: center;
+  padding: 1.5rem 0 1rem;
+}
+
+.book {
+  position: relative;
+  width: min(720px, 92vw);
+  height: min(560px, 70vh);
+  transform-style: preserve-3d;
+}
+
+/* spine shadow on the left of the stack */
+.book::before {
+  content: "";
+  position: absolute;
+  left: -2px;
+  top: 0;
+  bottom: 0;
+  width: 8px;
+  background: linear-gradient(to right, rgba(0,0,0,0.6), transparent);
+  z-index: 9999;
+  pointer-events: none;
+}
+
+.page {
+  position: absolute;
+  inset: 0;
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 2px 6px 6px 2px;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 1s cubic-bezier(.5,.05,.3,1);
+  box-shadow:
+    0 18px 40px rgba(0,0,0,0.55),
+    0 2px 0 var(--paper-edge) inset,
+    -2px 0 0 rgba(0,0,0,0.18) inset;
+  cursor: pointer;
+  will-change: transform;
+}
+.page.flipped { transform: rotateY(-180deg); }
+
+.page-front, .page-back {
+  position: absolute;
+  inset: 0;
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  padding: 2.2rem 2.4rem;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border-radius: inherit;
+}
+.page-back { transform: rotateY(180deg); }
+
+.page-front.cover, .page-back.cover {
+  background:
+    radial-gradient(circle at 30% 30%, rgba(212,166,55,0.18), transparent 60%),
+    linear-gradient(135deg, #2b1a1a, #0e0c14);
+  color: var(--paper);
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.cover-title {
+  font-family: 'Space Mono', monospace;
+  letter-spacing: 0.35em;
+  font-size: clamp(1.4rem, 3vw, 2.3rem);
+  margin: 0;
+  color: var(--gold);
+}
+.cover-sub {
+  font-style: italic;
+  color: var(--paper);
+  opacity: 0.85;
+  margin-top: 1rem;
+  max-width: 28ch;
+}
+.cover-rule {
+  width: 80px;
+  height: 1px;
+  background: var(--gold);
+  margin: 1.5rem auto;
+  opacity: 0.7;
+}
+.cover-hint {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--paper);
+  opacity: 0.6;
+  margin-top: 2rem;
+}
+
+.show-page {
+  display: grid;
+  grid-template-rows: auto auto auto 1fr auto;
+  gap: 0.7rem;
+}
+.show-meta {
+  display: flex;
+  justify-content: space-between;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
+.show-title {
+  font-size: clamp(1.6rem, 3vw, 2.4rem);
+  margin: 0;
+  font-weight: 600;
+  line-height: 1.1;
+}
+.show-host {
+  font-style: italic;
+  color: rgba(28,22,16,0.65);
+  margin: 0;
+}
+.show-desc {
+  margin: 0.2rem 0 0;
+  font-size: 1.05rem;
+  line-height: 1.5;
+}
+.sc-player {
+  width: 100%;
+  height: 140px;
+  border: none;
+  margin-top: auto;
+  background: #fff;
+}
+.page-num {
+  position: absolute;
+  bottom: 0.8rem;
+  right: 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  opacity: 0.45;
+}
+.page-corner {
+  position: absolute;
+  top: 0.8rem;
+  left: 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  opacity: 0.45;
+  letter-spacing: 0.1em;
+}
+
+.book-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1.2rem;
+  margin-top: 1rem;
+}
+.ctrl {
+  background: transparent;
+  border: 1px solid rgba(243,232,207,0.3);
+  color: var(--paper);
+  padding: 0.5rem 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.8rem;
+  letter-spacing: 0.1em;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.ctrl:hover { border-color: var(--gold); color: var(--gold); }
+.ctrl[disabled] { opacity: 0.3; cursor: not-allowed; }
+.indicator {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.75rem;
+  letter-spacing: 0.15em;
+  color: rgba(243,232,207,0.7);
+  min-width: 12ch;
+  text-align: center;
+}
+
+.hint {
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(243,232,207,0.45);
+  margin: 0.6rem 0 0;
+}
+
+/* ---- Map ---- */
+#map {
+  width: min(1100px, 96vw);
+  height: 70vh;
+  margin: 1.5rem auto;
+  border-radius: 4px;
+  border: 1px solid rgba(243,232,207,0.15);
+  background: var(--bg-1);
+}
+
+.leaflet-popup-content-wrapper {
+  background: var(--paper);
+  color: var(--ink);
+  border-radius: 2px;
+  font-family: 'Cormorant Garamond', Georgia, serif;
+}
+.leaflet-popup-content {
+  margin: 0.8rem 1rem;
+  font-size: 0.95rem;
+}
+.popup-title {
+  font-weight: 600;
+  display: block;
+  margin-bottom: 0.2rem;
+}
+.popup-meta {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: 0.4rem;
+}
+.popup-open {
+  display: inline-block;
+  margin-top: 0.3rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  background: var(--accent);
+  color: var(--paper);
+  padding: 0.3rem 0.5rem;
+  border: none;
+  cursor: pointer;
+  border-radius: 2px;
+}
+.popup-open:hover { background: var(--gold); color: var(--ink); }
+
+footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  letter-spacing: 0.15em;
+  color: rgba(243,232,207,0.4);
+}
+
+@media (max-width: 600px) {
+  .topbar { flex-direction: column; gap: 0.7rem; align-items: stretch; }
+  .views { justify-content: center; flex-wrap: wrap; }
+  .book { height: 75vh; }
+  .page-front, .page-back { padding: 1.4rem 1.5rem; }
+  .sc-player { height: 110px; }
+}

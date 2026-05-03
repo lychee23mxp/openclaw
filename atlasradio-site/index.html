@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Atlas Radio Club — Flipbook</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">◐</span>
+      <span class="brand-name">ATLAS RADIO CLUB</span>
+    </div>
+    <nav class="views">
+      <button id="view-flipbook" class="view-btn active" type="button">Flipbook</button>
+      <button id="view-map" class="view-btn" type="button">World Map</button>
+      <a class="view-btn link" href="https://soundcloud.com/atlasradioclub" target="_blank" rel="noopener">SoundCloud ↗</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="flipbook-view" class="view active">
+      <div class="stage">
+        <div class="book" id="book"></div>
+      </div>
+      <div class="book-controls">
+        <button id="prev" class="ctrl" type="button">← prev</button>
+        <span id="page-indicator" class="indicator">cover</span>
+        <button id="next" class="ctrl" type="button">next →</button>
+      </div>
+      <p class="hint">click a page or use ← / → to flip</p>
+    </section>
+
+    <section id="map-view" class="view">
+      <div id="map" aria-label="World map of shows"></div>
+      <p class="hint">click a pin to open that show</p>
+    </section>
+  </main>
+
+  <footer>
+    a sonic atlas of our collective · <a href="https://atlasradio.club" target="_blank" rel="noopener">atlasradio.club</a>
+  </footer>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
