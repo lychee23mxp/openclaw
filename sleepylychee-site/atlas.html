@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SLEEPYLYCHEE · ATLAS</title>
+<meta name="description" content="SLEEPYLYCHEE Atlas — a flip-book journey through every set, every city. Press play, flip the page, follow the route.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;800;900&family=Barlow:wght@300;400&family=IBM+Plex+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root { --bg:#070707; --fg:#e8e8e8; --muted:#222; --muted2:#5a5a5a; --paper:#0e0e0e; --paper2:#0a0a0a; --gold:#cfa46b; }
+*,*::before,*::after { box-sizing:border-box; margin:0; padding:0; }
+html,body { height:100%; }
+body { background:var(--bg); color:var(--fg); font-family:'Barlow',sans-serif; overflow:hidden; }
+
+/* ambient grain */
+body::after {
+  content:''; position:fixed; inset:0; z-index:9990; pointer-events:none; opacity:.04; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.88' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size:180px;
+}
+
+header.top { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; justify-content:space-between; align-items:center; padding:1.1rem 2.2rem; background:linear-gradient(to bottom,rgba(7,7,7,.95),transparent); }
+.brand { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:.95rem; letter-spacing:.32em; text-decoration:none; color:#fff; }
+.brand small { color:var(--muted2); font-family:'IBM Plex Mono',monospace; font-size:.5rem; letter-spacing:.4em; margin-left:.6rem; }
+.back-link { color:var(--muted2); text-decoration:none; font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.32em; text-transform:uppercase; transition:color .2s; }
+.back-link:hover { color:#fff; }
+
+/* layout */
+main.atlas { height:100%; display:grid; grid-template-columns:0.85fr 1.4fr; gap:0; padding-top:60px; }
+
+/* === LEFT: world map panel === */
+.map-panel { position:relative; padding:2rem; display:flex; flex-direction:column; justify-content:center; border-right:1px solid var(--muted); background:radial-gradient(ellipse at 30% 50%,#0d0d0d 0%,#040404 80%); }
+.map-panel::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:50px 50px; pointer-events:none; }
+.map-meta { font-family:'IBM Plex Mono',monospace; font-size:.5rem; letter-spacing:.4em; color:var(--muted2); text-transform:uppercase; margin-bottom:1rem; display:flex; justify-content:space-between; }
+.map-svg { width:100%; height:auto; max-height:65vh; display:block; position:relative; z-index:1; }
+.map-foot { font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.25em; color:var(--muted2); margin-top:1rem; display:flex; justify-content:space-between; }
+.map-foot strong { color:#fff; font-weight:400; }
+
+.land { fill:rgba(255,255,255,.05); stroke:rgba(255,255,255,.14); stroke-width:.4; }
+.grat { stroke:rgba(255,255,255,.045); stroke-width:.3; fill:none; }
+.arc  { fill:none; stroke:rgba(255,255,255,.42); stroke-width:.9; stroke-dasharray:5 6; animation:dash-flow 8s linear infinite; }
+.arc.live { stroke:var(--gold); stroke-width:1.4; stroke-dasharray:none; filter:drop-shadow(0 0 4px rgba(207,164,107,.5)); }
+@keyframes dash-flow { to { stroke-dashoffset:-220; } }
+
+.pin { cursor:pointer; }
+.pin-dot  { fill:#fff; }
+.pin-halo { fill:none; stroke:rgba(255,255,255,.5); stroke-width:1; transform-origin:center; transform-box:fill-box; animation:pulse-halo 2.6s ease-out infinite; }
+.pin.active .pin-halo { stroke:var(--gold); }
+.pin.active .pin-dot  { fill:var(--gold); r:4.2; }
+.pin-label { fill:rgba(255,255,255,.85); font-size:9px; font-family:'IBM Plex Mono',monospace; letter-spacing:.18em; text-transform:uppercase; pointer-events:none; opacity:0; transition:opacity .2s; }
+.pin:hover .pin-label, .pin.active .pin-label { opacity:1; }
+.pin.active .pin-label { fill:var(--gold); }
+@keyframes pulse-halo { 0%{transform:scale(.4);opacity:.9} 100%{transform:scale(2.8);opacity:0} }
+
+/* === RIGHT: book === */
+.book-panel { position:relative; padding:2rem 2.6rem 2rem 1.6rem; display:flex; flex-direction:column; justify-content:center; align-items:stretch; perspective:2200px; background:linear-gradient(135deg,#0a0a0a 0%,#050505 100%); }
+
+.book { position:relative; width:100%; max-width:760px; margin:0 auto; aspect-ratio:11/8; transform-style:preserve-3d; }
+.book::before { /* spine shadow */
+  content:''; position:absolute; left:50%; top:0; bottom:0; width:18px; transform:translateX(-50%); z-index:5; pointer-events:none;
+  background:linear-gradient(90deg,transparent 0,rgba(0,0,0,.65) 45%,rgba(0,0,0,.85) 50%,rgba(0,0,0,.65) 55%,transparent 100%);
+}
+.book::after { /* page edges hint */
+  content:''; position:absolute; inset:-2px; border:1px solid var(--muted); pointer-events:none;
+}
+
+.page { position:absolute; top:0; bottom:0; width:50%; padding:1.5rem 1.6rem; background:linear-gradient(160deg,var(--paper) 0%,var(--paper2) 100%); border:1px solid var(--muted); overflow:hidden; }
+.page::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(45deg,transparent 0,transparent 18px,rgba(255,255,255,.012) 18px,rgba(255,255,255,.012) 19px); pointer-events:none; }
+.page.left  { left:0;  border-right:none; }
+.page.right { right:0; border-left:none; }
+
+/* flip layer overlays right page; rotates around left edge */
+.flipper { position:absolute; right:0; top:0; bottom:0; width:50%; transform-style:preserve-3d; transform-origin:left center; transition:transform .9s cubic-bezier(.7,.05,.3,1); z-index:6; pointer-events:none; }
+.flipper.flipping { pointer-events:none; }
+.flipper.flip-next { transform:rotateY(-180deg); }
+.flipper-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; padding:1.5rem 1.6rem; background:linear-gradient(160deg,var(--paper) 0%,var(--paper2) 100%); border:1px solid var(--muted); border-left:none; overflow:hidden; }
+.flipper-face::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(45deg,transparent 0,transparent 18px,rgba(255,255,255,.012) 18px,rgba(255,255,255,.012) 19px); pointer-events:none; }
+.flipper-face.back { transform:rotateY(180deg); border:1px solid var(--muted); border-right:none; background:linear-gradient(200deg,var(--paper) 0%,var(--paper2) 100%); }
+
+/* same flip but reverse direction for prev */
+.flipper.flip-prev { transform:rotateY(180deg); transform-origin:right center; }
+
+/* === LEFT page content === */
+.lp-stamp-row { display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:.8rem; border-bottom:1px dashed rgba(255,255,255,.18); }
+.lp-stamp { padding:.4rem .65rem; border:1.5px solid var(--gold); color:var(--gold); font-family:'IBM Plex Mono',monospace; font-size:.46rem; letter-spacing:.32em; text-transform:uppercase; transform:rotate(-4deg); }
+.lp-flag { font-size:1.6rem; line-height:1; }
+.lp-city { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(2rem,3.4vw,3rem); line-height:1; text-transform:uppercase; margin-top:1.1rem; }
+.lp-country { font-size:.55rem; letter-spacing:.4em; color:var(--muted2); text-transform:uppercase; font-family:'IBM Plex Mono',monospace; margin-top:.55rem; }
+.lp-coords { font-size:.5rem; letter-spacing:.22em; color:var(--muted2); font-family:'IBM Plex Mono',monospace; margin-top:.3rem; }
+.lp-kv { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; margin:1.1rem 0 .8rem; padding:.85rem 0; border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); }
+.lp-kv-num { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.5rem; line-height:1; }
+.lp-kv-lab { font-size:.45rem; letter-spacing:.3em; text-transform:uppercase; color:var(--muted2); font-family:'IBM Plex Mono',monospace; margin-top:.3rem; }
+.lp-list { font-size:.62rem; line-height:1.55; color:rgba(232,232,232,.65); font-family:'IBM Plex Mono',monospace; max-height:170px; overflow-y:auto; padding-right:.4rem; }
+.lp-list::-webkit-scrollbar { width:3px; }
+.lp-list::-webkit-scrollbar-thumb { background:rgba(255,255,255,.18); }
+.lp-list .lp-li { display:grid; grid-template-columns:60px 1fr; gap:.6rem; padding:.32rem 0; border-bottom:1px dotted rgba(255,255,255,.08); }
+.lp-list .lp-d { color:rgba(255,255,255,.85); }
+
+/* === RIGHT page content (vinyl + player) === */
+.rp { height:100%; display:flex; flex-direction:column; }
+.rp-head { display:flex; justify-content:space-between; align-items:center; padding-bottom:.7rem; border-bottom:1px dashed rgba(255,255,255,.18); }
+.rp-side { font-family:'IBM Plex Mono',monospace; font-size:.5rem; letter-spacing:.32em; color:var(--gold); text-transform:uppercase; }
+.rp-no   { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.2rem; color:var(--muted2); }
+.rp-vinyl { display:flex; align-items:center; gap:1rem; margin:.95rem 0 .85rem; }
+.rp-disk { width:78px; height:78px; flex:0 0 78px; border-radius:50%; background:radial-gradient(circle at 50% 50%, #1a1a1a 0%, #0a0a0a 28%, #1a1a1a 30%, #0a0a0a 100%); position:relative; box-shadow:0 0 0 1px var(--muted), inset 0 0 0 1px rgba(255,255,255,.04); animation:spin 18s linear infinite paused; }
+.rp-disk.playing { animation-play-state:running; }
+.rp-disk::before { content:''; position:absolute; inset:34%; background:var(--gold); border-radius:50%; }
+.rp-disk::after  { content:''; position:absolute; inset:46%; background:#000; border-radius:50%; }
+@keyframes spin { to { transform:rotate(360deg); } }
+.rp-title { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.35rem; line-height:1.05; text-transform:uppercase; }
+.rp-sub   { font-size:.55rem; letter-spacing:.25em; color:var(--muted2); text-transform:uppercase; font-family:'IBM Plex Mono',monospace; margin-top:.35rem; }
+.rp-player { flex:1; min-height:160px; border:1px solid var(--muted); overflow:hidden; margin-top:.4rem; background:#000; }
+.rp-player iframe { display:block; width:100%; height:100%; min-height:160px; border:0; }
+.rp-foot { display:flex; justify-content:space-between; align-items:center; margin-top:.7rem; font-family:'IBM Plex Mono',monospace; font-size:.5rem; letter-spacing:.25em; color:var(--muted2); text-transform:uppercase; }
+.rp-foot a { color:var(--gold); text-decoration:none; }
+.rp-foot a:hover { text-decoration:underline; }
+
+/* page corner curl */
+.page.right::after { content:''; position:absolute; right:0; top:0; width:34px; height:34px; background:linear-gradient(225deg,rgba(0,0,0,.65) 50%,transparent 50%); pointer-events:none; }
+
+/* === Pager === */
+.pager { position:fixed; bottom:1rem; left:0; right:0; display:flex; flex-direction:column; align-items:center; gap:.7rem; pointer-events:none; z-index:50; }
+.pager-row { display:flex; align-items:center; gap:1.2rem; pointer-events:auto; background:rgba(8,8,8,.7); backdrop-filter:blur(10px); -webkit-backdrop-filter:blur(10px); border:1px solid var(--muted); padding:.55rem 1.1rem; }
+.pager-btn { background:none; border:1px solid transparent; color:var(--fg); font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.28em; text-transform:uppercase; padding:.4rem .8rem; cursor:pointer; transition:all .2s; }
+.pager-btn:hover { border-color:var(--muted); background:rgba(255,255,255,.03); color:#fff; }
+.pager-num { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.3rem; min-width:80px; text-align:center; }
+.pager-num small { font-size:.55rem; letter-spacing:.25em; color:var(--muted2); font-family:'IBM Plex Mono',monospace; margin-left:.4rem; }
+.pager-dots { display:flex; gap:.45rem; pointer-events:auto; }
+.pager-dot { width:6px; height:6px; border-radius:50%; background:var(--muted2); cursor:pointer; transition:all .2s; border:none; padding:0; }
+.pager-dot.active { background:var(--gold); transform:scale(1.5); }
+.pager-dot:hover { background:#fff; }
+
+/* hint */
+.kbhint { position:fixed; bottom:1rem; right:1.4rem; font-family:'IBM Plex Mono',monospace; font-size:.5rem; letter-spacing:.25em; color:var(--muted2); text-transform:uppercase; z-index:40; }
+.kbhint kbd { display:inline-block; padding:.15rem .4rem; border:1px solid var(--muted); margin:0 .2rem; color:var(--fg); }
+
+@media (max-width:980px){
+  body { overflow:auto; }
+  main.atlas { grid-template-columns:1fr; height:auto; min-height:100%; }
+  .map-panel { border-right:none; border-bottom:1px solid var(--muted); padding:1.4rem; min-height:42vh; }
+  .map-svg { max-height:36vh; }
+  .book-panel { padding:1.6rem 1.2rem 5.5rem; }
+  .book { aspect-ratio:auto; min-height:560px; }
+  .page,.flipper,.flipper-face { width:100%; left:0; right:0; padding:1.2rem; }
+  .page.left  { top:0;     height:50%; border-right:1px solid var(--muted); border-bottom:none; }
+  .page.right { top:50%;   height:50%; border-left:1px solid var(--muted);  border-top:1px dashed var(--muted); }
+  .flipper, .flipper-face { top:50%; height:50%; transform-origin:center top; }
+  .flipper.flip-next { transform:rotateX(180deg); }
+  .flipper.flip-prev { transform:rotateX(-180deg); transform-origin:center bottom; }
+  .flipper-face.back { transform:rotateX(180deg); }
+  .book::before { left:0; right:0; top:50%; bottom:auto; width:auto; height:18px; transform:translateY(-50%); background:linear-gradient(180deg,transparent 0,rgba(0,0,0,.65) 45%,rgba(0,0,0,.85) 50%,rgba(0,0,0,.65) 55%,transparent 100%); }
+  .page.right::after { display:none; }
+  .pager-row { padding:.45rem .8rem; gap:.7rem; }
+  .pager-num { min-width:70px; font-size:1.1rem; }
+  .kbhint { display:none; }
+}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <a href="#" class="brand" id="brand">SLEEPYLYCHEE <small>· ATLAS · A FLIP-BOOK OF EVERY SET</small></a>
+  <a href="index.html" class="back-link">← Main site</a>
+</header>
+
+<main class="atlas">
+
+  <aside class="map-panel">
+    <div class="map-meta"><span>WORLD ATLAS · v1</span><span id="map-meta-coords">— · —</span></div>
+    <svg id="map" class="map-svg" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet"></svg>
+    <div class="map-foot"><span id="map-foot-left">CITIES <strong id="m-cities">00</strong></span><span id="map-foot-mid">SETS <strong id="m-sets">00</strong></span><span id="map-foot-right">YEARS <strong id="m-years">00</strong></span></div>
+  </aside>
+
+  <section class="book-panel">
+    <div class="book" id="book">
+      <div class="page left"  id="page-left"></div>
+      <div class="page right" id="page-right"></div>
+      <div class="flipper" id="flipper">
+        <div class="flipper-face front" id="flip-front"></div>
+        <div class="flipper-face back"  id="flip-back"></div>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="pager">
+  <div class="pager-row">
+    <button class="pager-btn" id="prev-btn">◂ PREV</button>
+    <div class="pager-num"><span id="page-now">01</span><small>/ <span id="page-total">10</span></small></div>
+    <button class="pager-btn" id="next-btn">NEXT ▸</button>
+  </div>
+  <div class="pager-dots" id="pager-dots"></div>
+</div>
+
+<div class="kbhint">
+  Use <kbd>←</kbd> <kbd>→</kbd> to flip · <kbd>Space</kbd> next
+</div>
+
+<script>
+/* ====== DATA ====== */
+const CITIES = [
+  { name:'New York',    lat:40.7128,  lon:-74.0060,   country:'United States',  flag:'🇺🇸',
+    mix:{ url:'https://soundcloud.com/6amgroup/guest-mix-sleepylychee', title:'6AM Group Guest Mix', tag:'Side A · Featured' } },
+  { name:'Los Angeles', lat:34.0522,  lon:-118.2437,  country:'United States',  flag:'🇺🇸',
+    mix:{ url:'https://soundcloud.com/sleepylychee01',                  title:'Sunset Drift · LA',  tag:'Side A · Profile' } },
+  { name:'Tampa',       lat:27.9506,  lon:-82.4572,   country:'United States',  flag:'🇺🇸',
+    mix:{ url:'https://soundcloud.com/sleepylychee01',                  title:'Gulf Static',        tag:'Side B · Profile' } },
+  { name:'Boston',      lat:42.3601,  lon:-71.0589,   country:'United States',  flag:'🇺🇸',
+    mix:{ url:'https://soundcloud.com/sleepylychee01',                  title:'Brick & Bass',       tag:'Side A · Profile' } },
+  { name:'Beijing',     lat:39.9042,  lon:116.4074,   country:'China',          flag:'🇨🇳',
+    mix:{ url:'https://soundcloud.com/sleepylychee01',                  title:'Eastern Standard',   tag:'Side A · Profile' } },
+  { name:'Tianjin',     lat:39.0842,  lon:117.2009,   country:'China',          flag:'🇨🇳',
+    mix:{ url:'https://soundcloud.com/sleepylychee01',                  title:'Harbor Drone',       tag:'Side B · Profile' } },
+  { name:'Shanghai',    lat:31.2304,  lon:121.4737,   country:'China',          flag:'🇨🇳',
+    mix:{ url:'https://soundcloud.com/sleepylychee01',                  title:'Pearl Tower',        tag:'Side A · Profile' } },
+  { name:'Shenzhen',    lat:22.5431,  lon:114.0579,   country:'China',          flag:'🇨🇳',
+    mix:{ url:'https://soundcloud.com/sleepylychee01',                  title:'Shenzhen After Dark',tag:'Side A · Profile' } },
+  { name:'Wuhan',       lat:30.5928,  lon:114.3055,   country:'China',          flag:'🇨🇳',
+    mix:{ url:'https://soundcloud.com/sleepylychee01',                  title:'Yangtze Channels',   tag:'Side B · Profile' } },
+  { name:'Hong Kong',   lat:22.3193,  lon:114.1694,   country:'Hong Kong',      flag:'🇭🇰',
+    mix:{ url:'https://soundcloud.com/sleepylychee01',                  title:'Victoria Harbour',   tag:'Side A · Profile' } }
+];
+
+const EVENTS = [
+  { d:'2026-04-17', city:'New York',   t:'@markethotel' },
+  { d:'2026-04-11', city:'New York',   t:'@nightclub101' },
+  { d:'2026-02-20', city:'New York',   t:'@moodringnyc' },
+  { d:'2026-02-15', city:'New York',   t:'@notyetdesign_ &amp; @common.wavs' },
+  { d:'2026-01-30', city:'Los Angeles',t:'@theslipperclutch' },
+  { d:'2025-07-12', city:'Tampa',      t:'@Technosnobs' },
+  { d:'2025-05-10', city:'New York',   t:'@H0l0 with @agape_music' },
+  { d:'2025-04-06', city:'Boston',     t:'@Manray with @adapt' },
+  { d:'2025-01-29', city:'New York',   t:'@happyfunhideaway' },
+  { d:'2025-01-25', city:'New York',   t:'@elsewhere with @bias.nyc' },
+  { d:'2025-01-11', city:'New York',   t:'@fuzhousisters' },
+  { d:'2024-12-09', city:'New York',   t:'@markethotel with @WATF!' },
+  { d:'2024-11-09', city:'New York',   t:'@Standard Nerds Club' },
+  { d:'2024-10-04', city:'New York',   t:'@rash_nyc' },
+  { d:'2024-09-11', city:'New York',   t:'@BYEBYETECHNO with Parsons' },
+  { d:'2024-07-26', city:'Shenzhen',   t:'@hypebeast with @antigeneral' },
+  { d:'2024-07-21', city:'Shenzhen',   t:'@oilclub with @dawless_teahouse' },
+  { d:'2024-07-20', city:'Hong Kong',  t:'@Animatoaudio with @dawless_teahouse' },
+  { d:'2024-07-14', city:'Shanghai',   t:'@byybradio' },
+  { d:'2024-07-13', city:'Shanghai',   t:'@SofuArea' },
+  { d:'2024-06-29', city:'Shenzhen',   t:'@whyclub with @durante_max' },
+  { d:'2024-06-28', city:'Wuhan',      t:'@mininini with @durante_max' },
+  { d:'2024-06-26', city:'Shanghai',   t:'@all_club_' },
+  { d:'2024-06-22', city:'Shanghai',   t:'with @whitesabbathh' },
+  { d:'2024-06-21', city:'Shanghai',   t:'@cedarshanghai with @chromivsn + 5 VJs' },
+  { d:'2024-06-19', city:'Shanghai',   t:'with @moodswing.exp' },
+  { d:'2024-06-16', city:'Shanghai',   t:'@dirtyhousesh' },
+  { d:'2024-06-01', city:'Shanghai',   t:'@cedarshanghai with @liu3hhh' },
+  { d:'2024-05-03', city:'New York',   t:'@purgtory.bk with @connexions.nyc' },
+  { d:'2024-04-25', city:'New York',   t:'@bosanovacivicclub' },
+  { d:'2024-04-20', city:'New York',   t:'@Afoxcollective with @Girl_irl, @whitesabbath' },
+  { d:'2024-04-11', city:'New York',   t:'@iidrr distortion party' },
+  { d:'2024-03-27', city:'New York',   t:'@xpizza closing with @senaidaxoxo' },
+  { d:'2024-03-13', city:'New York',   t:'@moodringnyc with @dugout.radio' },
+  { d:'2024-03-09', city:'New York',   t:'@sojourner_gallery with @byebyetechno' },
+  { d:'2024-02-29', city:'New York',   t:'@bar.jade.bk with @tysmrecords' },
+  { d:'2024-02-23', city:'New York',   t:'@byebyetechno LAUNCH PARTY' },
+  { d:'2024-02-15', city:'New York',   t:'@noflex.nyc with @SUPESBASE, @SpotteToad' },
+  { d:'2024-02-10', city:'New York',   t:'@wearethefutureparty with @vidalibremusic' },
+  { d:'2024-02-08', city:'New York',   t:'@Vonbarnyc with @under_bleecker_street' },
+  { d:'2024-02-06', city:'New York',   t:'@xpizza with @KIDC, @Waterscape' },
+  { d:'2024-01-20', city:'New York',   t:'@cccradio with @annielee, @samisos_a' },
+  { d:'2024-01-13', city:'Beijing',    t:'@BBBbar with @JacksonLee, @MA JIA' },
+  { d:'2024-01-12', city:'Tianjin',    t:'@Gasclub with @mr.d.mouse, @cisco' },
+  { d:'2023-12-31', city:'Wuhan',      t:'@Minininiklub with @mr.d.mouse' },
+  { d:'2023-11-01', city:'New York',   t:'@ccc.radio with @michelle_kay, @ramsey.neville' },
+  { d:'2023-08-13', city:'Wuhan',      t:'@404 club with @allenvee' },
+  { d:'2023-08-05', city:'Wuhan',      t:'@Minininiklub with @Syndicate, @Vonatawk' },
+  { d:'2023-07-22', city:'Beijing',    t:'@Floso with @After_Co, @DOKEDO' },
+  { d:'2023-07-08', city:'Beijing',    t:'@dadabarbeijing with @ANOHITO, @Yilun' },
+  { d:'2023-07-02', city:'Beijing',    t:'@WINETAIL with @FemaleP' },
+  { d:'2023-05-13', city:'Los Angeles',t:'@bananaradio with @swimsoul' }
+];
+
+/* ====== HELPERS ====== */
+const proj = (lat,lon) => ({ x:(lon+180)/360*1000, y:(90-lat)/180*500 });
+const svgEl = (n,a) => { const e=document.createElementNS('http://www.w3.org/2000/svg',n); for(const k in (a||{})) e.setAttribute(k,a[k]); return e; };
+const fmtDate = d => { const m=['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC']; const [y,mo,da]=d.split('-'); return `${m[+mo-1]} ${da} '${y.slice(2)}`; };
+
+const LAND_PATHS = [
+  'M158,90 L260,75 L300,92 L302,140 L282,170 L222,205 L196,205 L166,180 L140,160 L130,130 Z',
+  'M315,55 L355,50 L370,80 L355,110 L320,105 L305,80 Z',
+  'M275,225 L320,225 L335,260 L330,310 L300,355 L275,365 L260,335 L255,290 L260,255 Z',
+  'M455,90 L545,80 L555,115 L520,140 L470,140 L455,115 Z',
+  'M460,160 L540,155 L565,200 L555,260 L520,310 L490,320 L465,290 L455,235 L450,195 Z',
+  'M555,75 L820,70 L860,110 L850,160 L800,200 L755,205 L700,200 L640,170 L585,160 L555,125 Z',
+  'M695,180 L735,180 L730,225 L710,235 L695,210 Z',
+  'M790,205 L830,200 L840,235 L825,260 L800,250 L788,225 Z',
+  'M820,310 L900,300 L920,335 L885,360 L825,355 L815,330 Z',
+  'M50,475 L950,475 L950,495 L50,495 Z'
+];
+
+/* ====== STATE ====== */
+let idx = 0;
+let flipping = false;
+let useBack = false;       // which flipper face is currently visible up front
+let lastDir = 'next';
+
+const $ = id => document.getElementById(id);
+const map = $('map'), pageLeft = $('page-left'), pageRight = $('page-right');
+const flipper = $('flipper'), flipFront = $('flip-front'), flipBack = $('flip-back');
+const dotsEl = $('pager-dots'), pageNow = $('page-now'), pageTotal = $('page-total');
+
+/* ====== MAP RENDER ====== */
+function buildMap() {
+  map.innerHTML = '';
+  const g = svgEl('g');
+  for (let lat=-60; lat<=60; lat+=30) { const y=(90-lat)/180*500; g.appendChild(svgEl('line',{class:'grat',x1:0,x2:1000,y1:y,y2:y})); }
+  for (let lon=-150; lon<=150; lon+=30) { const x=(lon+180)/360*1000; g.appendChild(svgEl('line',{class:'grat',x1:x,x2:x,y1:0,y2:500})); }
+  map.appendChild(g);
+
+  const lG = svgEl('g'); LAND_PATHS.forEach(d => lG.appendChild(svgEl('path',{class:'land',d}))); map.appendChild(lG);
+
+  // Static arcs in chronological order
+  const arcG = svgEl('g',{id:'arc-g'}); map.appendChild(arcG);
+  const liveG = svgEl('g',{id:'live-arc'}); map.appendChild(liveG);
+  const list = EVENTS.slice().sort((a,b) => a.d.localeCompare(b.d));
+  const cityByName = Object.fromEntries(CITIES.map(c=>[c.name,c]));
+  const pts = list.map(e => proj(cityByName[e.city].lat, cityByName[e.city].lon));
+  for (let i=0; i<pts.length-1; i++) {
+    const a=pts[i], b=pts[i+1]; const dist=Math.hypot(b.x-a.x,b.y-a.y); if(dist<4) continue;
+    const mx=(a.x+b.x)/2, my=(a.y+b.y)/2 - Math.min(140,dist*0.32);
+    arcG.appendChild(svgEl('path',{class:'arc',d:`M${a.x},${a.y} Q${mx},${my} ${b.x},${b.y}`}));
+  }
+
+  // Pins
+  const pG = svgEl('g',{id:'pin-g'});
+  CITIES.forEach((c,i) => {
+    const p = proj(c.lat,c.lon);
+    const pin = svgEl('g',{class:'pin','data-i':i, transform:`translate(${p.x},${p.y})`});
+    pin.appendChild(svgEl('circle',{class:'pin-halo',cx:0,cy:0,r:4}));
+    const halo2 = svgEl('circle',{class:'pin-halo',cx:0,cy:0,r:4}); halo2.style.animationDelay='1.3s'; pin.appendChild(halo2);
+    pin.appendChild(svgEl('circle',{class:'pin-dot',cx:0,cy:0,r:3}));
+    const lbl = svgEl('text',{class:'pin-label',x:7,y:-7}); lbl.textContent = c.name.toUpperCase(); pin.appendChild(lbl);
+    pin.addEventListener('click', () => goTo(i));
+    pin.addEventListener('mouseenter', () => { $('map-meta-coords').textContent = `${Math.abs(c.lat).toFixed(2)}° ${c.lat>=0?'N':'S'} · ${Math.abs(c.lon).toFixed(2)}° ${c.lon>=0?'E':'W'}`; });
+    pG.appendChild(pin);
+  });
+  map.appendChild(pG);
+}
+
+function highlightArcs() {
+  const live = $('live-arc'); if (!live) return;
+  live.innerHTML = '';
+  const c = CITIES[idx]; const cur = proj(c.lat,c.lon);
+  // draw arcs from current city to neighbors (prev & next)
+  [-1,1].forEach(o => {
+    const j = idx + o; if (j<0 || j>=CITIES.length) return;
+    const n = CITIES[j], np = proj(n.lat,n.lon);
+    const dist = Math.hypot(np.x-cur.x, np.y-cur.y); if (dist<4) return;
+    const mx=(cur.x+np.x)/2, my=(cur.y+np.y)/2 - Math.min(140,dist*0.32);
+    live.appendChild(svgEl('path',{class:'arc live',d:`M${cur.x},${cur.y} Q${mx},${my} ${np.x},${np.y}`}));
+  });
+}
+
+function setActivePin() {
+  document.querySelectorAll('.pin').forEach(p => p.classList.toggle('active', +p.dataset.i === idx));
+}
+
+/* ====== PAGE CONTENT ====== */
+function leftPageHTML(c) {
+  const events = EVENTS.filter(e => e.city === c.name).sort((a,b) => b.d.localeCompare(a.d));
+  const lat = `${Math.abs(c.lat).toFixed(4)}° ${c.lat>=0?'N':'S'}`;
+  const lon = `${Math.abs(c.lon).toFixed(4)}° ${c.lon>=0?'E':'W'}`;
+  const years = new Set(events.map(e => e.d.slice(0,4)));
+  const list = events.length
+    ? events.map(e => `<div class="lp-li"><span class="lp-d">${fmtDate(e.d)}</span><span>${e.t}</span></div>`).join('')
+    : `<div class="lp-li"><span class="lp-d">—</span><span>No archived sets yet.</span></div>`;
+  return `
+    <div class="lp-stamp-row">
+      <div class="lp-stamp">Stamped · ${c.country.split(' ')[0].toUpperCase()}</div>
+      <div class="lp-flag">${c.flag}</div>
+    </div>
+    <div class="lp-city">${c.name}</div>
+    <div class="lp-country">${c.country}</div>
+    <div class="lp-coords">${lat} · ${lon}</div>
+    <div class="lp-kv">
+      <div><div class="lp-kv-num">${events.length}</div><div class="lp-kv-lab">Sets</div></div>
+      <div><div class="lp-kv-num">${years.size}</div><div class="lp-kv-lab">Years</div></div>
+    </div>
+    <div class="lp-list">${list}</div>
+  `;
+}
+
+function rightPageHTML(c, page) {
+  const url = encodeURIComponent(c.mix.url);
+  const playerSrc = `https://w.soundcloud.com/player/?url=${url}&color=%23cfa46b&auto_play=false&hide_related=true&show_comments=false&show_user=true&show_reposts=false&show_teaser=false&visual=false`;
+  return `
+    <div class="rp">
+      <div class="rp-head">
+        <div class="rp-side">${c.mix.tag}</div>
+        <div class="rp-no">№ ${String(page).padStart(2,'0')}</div>
+      </div>
+      <div class="rp-vinyl">
+        <div class="rp-disk" data-disk></div>
+        <div>
+          <div class="rp-title">${c.mix.title}</div>
+          <div class="rp-sub">SLEEPYLYCHEE · ${c.name.toUpperCase()}</div>
+        </div>
+      </div>
+      <div class="rp-player"><iframe loading="lazy" allow="autoplay" src="${playerSrc}"></iframe></div>
+      <div class="rp-foot">
+        <span>SOUNDCLOUD</span>
+        <a href="${c.mix.url}" target="_blank" rel="noopener">Open in SoundCloud ↗</a>
+      </div>
+    </div>
+  `;
+}
+
+/* ====== RENDER ====== */
+function render(initial) {
+  const c = CITIES[idx];
+  pageLeft.innerHTML = leftPageHTML(c);
+  pageRight.innerHTML = rightPageHTML(c, idx + 1);
+  pageNow.textContent = String(idx + 1).padStart(2,'0');
+  pageTotal.textContent = String(CITIES.length).padStart(2,'0');
+  setActivePin();
+  highlightArcs();
+  document.querySelectorAll('.pager-dot').forEach((d,i) => d.classList.toggle('active', i === idx));
+  if (initial) {
+    flipFront.innerHTML = pageRight.innerHTML;
+    flipBack.innerHTML = pageRight.innerHTML;
+  }
+  // start the disk spin loop
+  document.querySelectorAll('[data-disk]').forEach(d => d.classList.add('playing'));
+}
+
+/* ====== FLIP ====== */
+function goTo(target, dir) {
+  if (flipping || target === idx || target < 0 || target >= CITIES.length) return;
+  const direction = dir || (target > idx ? 'next' : 'prev');
+  lastDir = direction;
+  flipping = true;
+
+  // pre-render the target right page on the hidden face
+  const targetCity = CITIES[target];
+  const targetHTML = rightPageHTML(targetCity, target + 1);
+  // The currently-visible flipper face has the current right-page content already (kept in sync).
+  // Mirror current right-page into the visible face just in case
+  const visible = useBack ? flipBack : flipFront;
+  const hidden  = useBack ? flipFront : flipBack;
+  visible.innerHTML = pageRight.innerHTML;
+  hidden.innerHTML  = targetHTML;
+
+  // Animate flip
+  flipper.classList.remove('flip-next','flip-prev');
+  // force reflow
+  void flipper.offsetWidth;
+  flipper.classList.add(direction === 'next' ? 'flip-next' : 'flip-prev');
+
+  setTimeout(() => {
+    idx = target;
+    render(false);
+    // After animation ends, snap flipper back to neutral with new content on front
+    useBack = !useBack;
+    flipper.style.transition = 'none';
+    flipper.classList.remove('flip-next','flip-prev');
+    // swap which face is "front" by re-syncing both faces
+    flipFront.innerHTML = pageRight.innerHTML;
+    flipBack.innerHTML  = pageRight.innerHTML;
+    void flipper.offsetWidth;
+    flipper.style.transition = '';
+    flipping = false;
+  }, 920);
+}
+
+function next() { goTo((idx + 1) % CITIES.length, 'next'); }
+function prev() { goTo((idx - 1 + CITIES.length) % CITIES.length, 'prev'); }
+
+/* ====== INIT ====== */
+buildMap();
+
+// dots
+CITIES.forEach((c,i) => {
+  const d = document.createElement('button');
+  d.className = 'pager-dot' + (i === 0 ? ' active' : '');
+  d.title = c.name;
+  d.onclick = () => goTo(i);
+  dotsEl.appendChild(d);
+});
+
+// stats
+$('m-cities').textContent = String(CITIES.length).padStart(2,'0');
+$('m-sets').textContent = String(EVENTS.length).padStart(2,'0');
+$('m-years').textContent = String(new Set(EVENTS.map(e => e.d.slice(0,4))).size).padStart(2,'0');
+
+render(true);
+
+// nav buttons
+$('next-btn').onclick = next;
+$('prev-btn').onclick = prev;
+
+// keyboard
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); next(); }
+  if (e.key === 'ArrowLeft')  { e.preventDefault(); prev(); }
+  if (/^[0-9]$/.test(e.key))  { const n = e.key === '0' ? 9 : (+e.key - 1); if (n < CITIES.length) goTo(n); }
+});
+
+// touch swipe
+let tx=0, ty=0;
+document.addEventListener('touchstart', e => { tx = e.touches[0].clientX; ty = e.touches[0].clientY; }, { passive:true });
+document.addEventListener('touchend', e => {
+  const dx = e.changedTouches[0].clientX - tx;
+  const dy = e.changedTouches[0].clientY - ty;
+  if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy)) (dx < 0 ? next() : prev());
+});
+</script>
+</body>
+</html>
