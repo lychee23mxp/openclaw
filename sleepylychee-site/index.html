@@ -149,33 +149,81 @@ section { padding:7rem 3.5rem; }
 .sc-wrap iframe { display:block; }
 .sc-label { font-size:.52rem; letter-spacing:.25em; text-transform:uppercase; color:var(--muted2); font-family:'IBM Plex Mono',monospace; margin:1.5rem 0 .6rem; }
 
-/* TIMELINE */
-.journey-intro { max-width:480px; margin-bottom:4.5rem; }
+/* WORLDMAP JOURNEY */
+.journey-intro { max-width:520px; margin-bottom:2.6rem; }
 .journey-intro h2 { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(2.5rem,5vw,5rem); line-height:.93; margin-bottom:1rem; text-transform:uppercase; }
-.journey-intro p { font-size:.7rem; line-height:1.9; color:rgba(237,234,224,.4); font-family:'IBM Plex Mono',monospace; }
-.timeline { position:relative; padding-left:2.5rem; }
-.timeline::before { content:''; position:absolute; left:0; top:0; bottom:0; width:1px; background:linear-gradient(to bottom,#fff 0%,var(--muted) 30%); }
-.tl-year-group { margin-bottom:.1rem; }
-.tl-year-btn { display:flex; align-items:center; gap:1.2rem; cursor:none; padding:1rem 0; position:relative; border:none; background:none; color:inherit; width:100%; text-align:left; transition:padding-left .2s; }
-.tl-year-btn:hover { padding-left:.3rem; }
-.tl-year-btn::before { content:''; position:absolute; left:-2.5rem; width:9px; height:9px; border-radius:50%; background:var(--bg); border:1.5px solid var(--muted2); transition:all .3s; transform:translateX(-4px); }
-.tl-year-btn.open::before { background:#fff; border-color:#fff; box-shadow:0 0 0 4px rgba(255,255,255,.1); }
-.tl-year-label { font-family:'Barlow Condensed',sans-serif; font-size:2.5rem; font-weight:900; text-transform:uppercase; color:var(--muted2); transition:color .3s; line-height:1; }
-.tl-year-btn.open .tl-year-label { color:var(--fg); }
-.tl-year-count { font-size:.53rem; letter-spacing:.22em; text-transform:uppercase; color:var(--muted2); font-family:'IBM Plex Mono',monospace; transition:color .3s; }
-.tl-year-btn.open .tl-year-count { color:#fff; }
-.tl-chevron { margin-left:auto; font-size:.55rem; color:var(--muted2); transition:transform .3s,color .3s; font-family:'IBM Plex Mono',monospace; }
-.tl-year-btn.open .tl-chevron { transform:rotate(90deg); color:#fff; }
-.tl-events { overflow:hidden; max-height:0; transition:max-height .6s cubic-bezier(.4,0,.2,1); }
-.tl-events.open { max-height:9999px; }
-.tl-event-list { padding:0 0 1.5rem; list-style:none; }
-.tl-event { display:grid; grid-template-columns:54px 1fr auto; gap:1.2rem; align-items:center; padding:.68rem 0; border-bottom:1px solid rgba(48,48,48,.5); transition:background .15s,padding .15s,margin .15s; }
-.tl-event:hover { background:rgba(255,255,255,.02); padding-left:.7rem; padding-right:.7rem; margin:0 -.7rem; }
-.tl-event-date { font-size:.61rem; color:var(--fg); font-family:'IBM Plex Mono',monospace; white-space:nowrap; }
-.tl-event-desc { font-size:.76rem; color:rgba(232,232,232,.62); font-weight:300; line-height:1.4; }
-.tl-event-desc a { color:#999; text-decoration:none; }
-.tl-event-desc a:hover { text-decoration:underline; color:#fff; }
-.tl-event-city { font-size:.54rem; letter-spacing:.15em; text-transform:uppercase; color:var(--muted2); white-space:nowrap; font-family:'IBM Plex Mono',monospace; }
+.journey-intro p { font-size:.72rem; line-height:1.9; color:rgba(237,234,224,.42); font-family:'IBM Plex Mono',monospace; }
+
+.journey-stats { display:flex; gap:3rem; flex-wrap:wrap; margin:0 0 2.4rem; padding:1.4rem 0; border-top:1px solid var(--muted); border-bottom:1px solid var(--muted); }
+.j-stat-num { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:2.6rem; line-height:1; color:#fff; letter-spacing:.02em; }
+.j-stat-label { font-size:.5rem; letter-spacing:.32em; text-transform:uppercase; color:var(--muted2); font-family:'IBM Plex Mono',monospace; margin-top:.45rem; }
+
+.journey-filter { display:flex; gap:.45rem; flex-wrap:wrap; margin-bottom:1.6rem; }
+.j-filter-btn { background:none; border:1px solid var(--muted); color:var(--muted2); padding:.5rem .95rem; font-size:.55rem; letter-spacing:.28em; text-transform:uppercase; font-family:'IBM Plex Mono',monospace; cursor:none; transition:all .2s; }
+.j-filter-btn:hover { border-color:#888; color:#fff; }
+.j-filter-btn.active { background:#fff; color:#000; border-color:#fff; }
+
+.journey-stage { display:grid; grid-template-columns:1.55fr 1fr; gap:1.6rem; align-items:stretch; }
+
+.map-wrap { position:relative; border:1px solid var(--muted); background:radial-gradient(ellipse at center,#0e0e0e 0%,#040404 85%); overflow:hidden; aspect-ratio:16/9; }
+.map-wrap::before { content:''; position:absolute; inset:0; background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px); background-size:50px 50px; pointer-events:none; }
+.map-corner { position:absolute; font-size:.48rem; letter-spacing:.4em; color:var(--muted2); font-family:'IBM Plex Mono',monospace; pointer-events:none; }
+.map-corner.tl { top:.9rem; left:1rem; }
+.map-corner.tr { top:.9rem; right:1rem; }
+.map-corner.br { bottom:.7rem; right:1rem; }
+.map-svg { position:absolute; inset:0; width:100%; height:100%; display:block; }
+
+.land { fill:rgba(255,255,255,.05); stroke:rgba(255,255,255,.14); stroke-width:.4; }
+.grat { stroke:rgba(255,255,255,.045); stroke-width:.3; fill:none; }
+.arc { fill:none; stroke:rgba(255,255,255,.55); stroke-width:1; stroke-dasharray:5 6; animation:dash-flow 8s linear infinite; }
+@keyframes dash-flow { to { stroke-dashoffset:-220; } }
+
+.pin { cursor:none; }
+.pin-dot { fill:#fff; }
+.pin-halo { fill:none; stroke:rgba(255,255,255,.55); stroke-width:1; transform-origin:center; transform-box:fill-box; animation:pulse-halo 2.6s ease-out infinite; }
+.pin.active .pin-halo { stroke:#fff; }
+.pin-label { fill:rgba(255,255,255,.85); font-size:9px; font-family:'IBM Plex Mono',monospace; letter-spacing:.18em; text-transform:uppercase; pointer-events:none; opacity:0; transition:opacity .2s; }
+.pin:hover .pin-label,.pin.active .pin-label { opacity:1; }
+@keyframes pulse-halo { 0%{transform:scale(.4);opacity:.9} 100%{transform:scale(2.8);opacity:0} }
+
+/* PASSPORT FLIP CARD */
+.passport { position:relative; perspective:1800px; min-height:440px; }
+.pass-inner { position:relative; width:100%; height:100%; min-height:440px; transition:transform .85s cubic-bezier(.6,.05,.3,1); transform-style:preserve-3d; }
+.pass-inner.flip { transform:rotateY(180deg); }
+.pass-face { position:absolute; inset:0; backface-visibility:hidden; -webkit-backface-visibility:hidden; border:1px solid var(--muted); background:linear-gradient(150deg,#0e0e0e 0%,#080808 100%); padding:1.6rem 1.6rem 1.3rem; display:flex; flex-direction:column; overflow:hidden; }
+.pass-face::before { content:''; position:absolute; inset:0; background:repeating-linear-gradient(45deg,transparent 0,transparent 18px,rgba(255,255,255,.012) 18px,rgba(255,255,255,.012) 19px); pointer-events:none; }
+.pass-face.back { transform:rotateY(180deg); }
+
+.pass-stamp-row { display:flex; justify-content:space-between; align-items:flex-start; padding-bottom:.85rem; border-bottom:1px dashed rgba(255,255,255,.18); position:relative; }
+.pass-stamp { display:inline-block; padding:.4rem .7rem; border:1.5px solid rgba(255,255,255,.55); color:rgba(255,255,255,.72); font-family:'IBM Plex Mono',monospace; font-size:.46rem; letter-spacing:.32em; text-transform:uppercase; transform:rotate(-4deg); }
+.pass-flag { font-size:1.5rem; line-height:1; }
+.pass-city { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:clamp(2rem,3.7vw,3.2rem); line-height:1; text-transform:uppercase; margin-top:1.05rem; }
+.pass-country { font-size:.55rem; letter-spacing:.4em; color:var(--muted2); text-transform:uppercase; font-family:'IBM Plex Mono',monospace; margin-top:.55rem; }
+.pass-coords { font-size:.5rem; letter-spacing:.22em; color:var(--muted2); font-family:'IBM Plex Mono',monospace; margin-top:.3rem; }
+.pass-meta { display:grid; grid-template-columns:1fr 1fr; gap:.8rem; margin:1.1rem 0 .8rem; padding:.85rem 0; border-top:1px solid rgba(255,255,255,.08); border-bottom:1px solid rgba(255,255,255,.08); }
+.pass-meta-num { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.55rem; line-height:1; }
+.pass-meta-lab { font-size:.45rem; letter-spacing:.3em; text-transform:uppercase; color:var(--muted2); font-family:'IBM Plex Mono',monospace; margin-top:.3rem; }
+.pass-events { flex:1; overflow-y:auto; max-height:175px; padding-right:.4rem; position:relative; }
+.pass-events::-webkit-scrollbar { width:3px; }
+.pass-events::-webkit-scrollbar-thumb { background:rgba(255,255,255,.18); }
+.pass-event { display:grid; grid-template-columns:64px 1fr; gap:.8rem; padding:.5rem 0; border-bottom:1px solid rgba(48,48,48,.5); }
+.pass-event-d { color:var(--fg); font-family:'IBM Plex Mono',monospace; font-size:.55rem; letter-spacing:.05em; }
+.pass-event-x { color:rgba(232,232,232,.62); font-weight:300; line-height:1.4; font-size:.66rem; }
+.pass-event-x a { color:#aaa; text-decoration:none; }
+.pass-event-x a:hover { color:#fff; text-decoration:underline; }
+.pass-nav { display:flex; justify-content:space-between; align-items:center; margin-top:1rem; padding-top:.95rem; border-top:1px dashed rgba(255,255,255,.18); }
+.pass-nav-btn { background:none; border:1px solid var(--muted); color:var(--fg); padding:.5rem .85rem; font-size:.5rem; letter-spacing:.28em; text-transform:uppercase; font-family:'IBM Plex Mono',monospace; cursor:none; transition:all .2s; }
+.pass-nav-btn:hover { border-color:#fff; background:rgba(255,255,255,.05); }
+.pass-page { font-size:.5rem; letter-spacing:.28em; color:var(--muted2); font-family:'IBM Plex Mono',monospace; }
+
+/* STAMPS STRIP */
+.stamps-strip { display:flex; gap:.6rem; overflow-x:auto; padding:1.6rem 0 .4rem; margin-top:2.4rem; scrollbar-width:none; }
+.stamps-strip::-webkit-scrollbar { display:none; }
+.stamp-card { flex:0 0 220px; border:1px solid var(--muted); padding:1rem; background:#0c0c0c; cursor:none; transition:all .25s; }
+.stamp-card:hover { border-color:#fff; transform:translateY(-3px); }
+.stamp-card.active { border-color:#fff; background:rgba(255,255,255,.03); }
+.stamp-city { font-family:'Barlow Condensed',sans-serif; font-weight:900; font-size:1.25rem; text-transform:uppercase; line-height:1; }
+.stamp-meta { display:flex; justify-content:space-between; margin-top:.55rem; font-size:.5rem; letter-spacing:.22em; color:var(--muted2); font-family:'IBM Plex Mono',monospace; text-transform:uppercase; }
 
 /* GALLERY */
 .gallery-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:.55rem; }
@@ -222,13 +270,15 @@ footer a:hover { color:#fff; }
   .hero { padding:0 1.5rem 4rem; }
   .bio-grid,.links-grid,.player-grid { grid-template-columns:1fr; gap:3rem; }
   .gallery-grid { grid-template-columns:repeat(2,1fr); }
-  .tl-event { grid-template-columns:48px 1fr; }
-  .tl-event-city { display:none; }
+  .journey-stage { grid-template-columns:1fr; }
+  .map-wrap { aspect-ratio:4/3; }
+  .passport,.pass-inner { min-height:400px; }
+  .journey-stats { gap:1.6rem; }
+  .j-stat-num { font-size:1.9rem; }
+  .stamp-card { flex-basis:180px; }
   body::after { display:none; }
-  .tl-year-btn { cursor:auto; }
-  .gallery-item { cursor:auto; }
-  #lbox { cursor:auto; }
-  #lbox-close { cursor:auto; }
+  .gallery-item,.pin,.stamp-card,.j-filter-btn,.pass-nav-btn { cursor:auto; }
+  #lbox,#lbox-close { cursor:auto; }
 }
 </style>
 </head>
@@ -316,116 +366,46 @@ footer a:hover { color:#fff; }
   </div>
 </section>
 
-<!-- TIMELINE -->
+<!-- WORLDMAP JOURNEY -->
 <section id="journey">
   <div class="section-label reveal">Follow My Journey</div>
   <div class="journey-intro reveal">
     <h2>EVERY CITY,<br/>EVERY STAGE.</h2>
-    <p>From Beijing basements to New York warehouses — a growing map of nights and memories. Click a year to explore.</p>
+    <p>From Beijing basements to New York warehouses — a living atlas of nights, cities, and passports stamped between sets. Tap a pin on the map to flip the page.</p>
   </div>
-  <div class="timeline reveal" data-delay="1">
 
-    <div class="tl-year-group">
-      <button class="tl-year-btn open" onclick="toggleYear(this)">
-        <span class="tl-year-label">2026</span>
-        <span class="tl-year-count">5 shows</span>
-        <span class="tl-chevron">▶</span>
-      </button>
-      <div class="tl-events open">
-        <ul class="tl-event-list">
-          <li class="tl-event"><span class="tl-event-date">Apr 17</span><span class="tl-event-desc">@markethotel</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Apr 11</span><span class="tl-event-desc">@nightclub101</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Feb 20</span><span class="tl-event-desc">@moodringnyc</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Feb 15</span><span class="tl-event-desc"><a href="https://www.instagram.com/notyetdesign_/" target="_blank">@notyetdesign_</a> &amp; <a href="https://www.instagram.com/common.wavs/" target="_blank">@common.wavs</a></span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jan 30</span><span class="tl-event-desc">@theslipperclutch</span><span class="tl-event-city">Los Angeles</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="tl-year-group">
-      <button class="tl-year-btn" onclick="toggleYear(this)">
-        <span class="tl-year-label">2025</span>
-        <span class="tl-year-count">6 shows</span>
-        <span class="tl-chevron">▶</span>
-      </button>
-      <div class="tl-events">
-        <ul class="tl-event-list">
-          <li class="tl-event"><span class="tl-event-date">Jul 12</span><span class="tl-event-desc">@Technosnobs</span><span class="tl-event-city">Tampa</span></li>
-          <li class="tl-event"><span class="tl-event-date">May 10</span><span class="tl-event-desc">@H0l0 with @agape_music</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Apr 06</span><span class="tl-event-desc">@Manray with @adapt</span><span class="tl-event-city">Boston</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jan 29</span><span class="tl-event-desc">@happyfunhideaway</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jan 25</span><span class="tl-event-desc">@elsewhere with @bias.nyc</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jan 11</span><span class="tl-event-desc">@fuzhousisters</span><span class="tl-event-city">New York</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="tl-year-group">
-      <button class="tl-year-btn" onclick="toggleYear(this)">
-        <span class="tl-year-label">2024</span>
-        <span class="tl-year-count">34 shows</span>
-        <span class="tl-chevron">▶</span>
-      </button>
-      <div class="tl-events">
-        <ul class="tl-event-list">
-          <li class="tl-event"><span class="tl-event-date">Dec 09</span><span class="tl-event-desc">@markethotel with @WATF!</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Nov 09</span><span class="tl-event-desc">@Standard Nerds Club</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Oct 04</span><span class="tl-event-desc">@rash_nyc</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Sep 11</span><span class="tl-event-desc">@BYEBYETECHNO with @Parsons School of Design</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jul 26</span><span class="tl-event-desc">@hypebeast with @antigeneral</span><span class="tl-event-city">Shenzhen</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jul 21</span><span class="tl-event-desc">@oilclub with @dawless_teahouse</span><span class="tl-event-city">Shenzhen</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jul 20</span><span class="tl-event-desc">@Animatoaudio with @dawless_teahouse</span><span class="tl-event-city">Hong Kong</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jul 14</span><span class="tl-event-desc">@byybradio</span><span class="tl-event-city">Shanghai</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jul 13</span><span class="tl-event-desc">@SofuArea</span><span class="tl-event-city">Shanghai</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jun 29</span><span class="tl-event-desc">@whyclub with @durante_max</span><span class="tl-event-city">Shenzhen</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jun 28</span><span class="tl-event-desc">@mininini with @durante_max</span><span class="tl-event-city">Wuhan</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jun 26</span><span class="tl-event-desc">@all_club_</span><span class="tl-event-city">Shanghai</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jun 22</span><span class="tl-event-desc">with @whitesabbathh</span><span class="tl-event-city">Shanghai</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jun 21</span><span class="tl-event-desc">@cedarshanghai with @chromivsn + 5 VJs</span><span class="tl-event-city">Shanghai</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jun 19</span><span class="tl-event-desc">with @moodswing.exp</span><span class="tl-event-city">Shanghai</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jun 16</span><span class="tl-event-desc">@dirtyhousesh</span><span class="tl-event-city">Shanghai</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jun 01</span><span class="tl-event-desc">@cedarshanghai with @liu3hhh</span><span class="tl-event-city">Shanghai</span></li>
-          <li class="tl-event"><span class="tl-event-date">May 03</span><span class="tl-event-desc">@purgtory.bk with <a href="https://www.instagram.com/connexions.nyc/" target="_blank">@connexions.nyc</a></span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Apr 25</span><span class="tl-event-desc">@bosanovacivicclub</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Apr 20</span><span class="tl-event-desc">@Afoxcollective with @Girl_irl, @whitesabbath</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Apr 11</span><span class="tl-event-desc">@iidrr distortion party</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Mar 27</span><span class="tl-event-desc">@xpizza closing program with <a href="https://www.instagram.com/senaidaxoxo/" target="_blank">@senaidaxoxo</a></span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Mar 13</span><span class="tl-event-desc">@moodringnyc with @dugout.radio</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Mar 09</span><span class="tl-event-desc">@sojourner_gallery with @byebyetechno</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Feb 29</span><span class="tl-event-desc">@bar.jade.bk with @tysmrecords</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Feb 23</span><span class="tl-event-desc">@byebyetechno LAUNCH PARTY</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Feb 15</span><span class="tl-event-desc">@noflex.nyc with @SUPESBASE, @SpotteToad</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Feb 10</span><span class="tl-event-desc">@wearethefutureparty with <a href="https://www.instagram.com/vidalibremusic/" target="_blank">@vidalibremusic</a></span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Feb 08</span><span class="tl-event-desc">@Vonbarnyc with @under_bleecker_street</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Feb 06</span><span class="tl-event-desc">@xpizza with @KIDC, @Waterscape</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jan 20</span><span class="tl-event-desc">@cccradio with @annielee, @samisos_a</span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jan 13</span><span class="tl-event-desc">@BBBbar with @JacksonLee, @MA JIA</span><span class="tl-event-city">Beijing</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jan 12</span><span class="tl-event-desc">@Gasclub with @mr.d.mouse, @cisco</span><span class="tl-event-city">Tianjin</span></li>
-        </ul>
-      </div>
-    </div>
-
-    <div class="tl-year-group">
-      <button class="tl-year-btn" onclick="toggleYear(this)">
-        <span class="tl-year-label">2023</span>
-        <span class="tl-year-count">8 shows</span>
-        <span class="tl-chevron">▶</span>
-      </button>
-      <div class="tl-events">
-        <ul class="tl-event-list">
-          <li class="tl-event"><span class="tl-event-date">Dec 31</span><span class="tl-event-desc">@Minininiklub with @mr.d.mouse</span><span class="tl-event-city">Wuhan</span></li>
-          <li class="tl-event"><span class="tl-event-date">Nov 01</span><span class="tl-event-desc">@ccc.radio with @michelle_kay, <a href="https://www.instagram.com/ramsey.neville/" target="_blank">@ramsey.neville</a></span><span class="tl-event-city">New York</span></li>
-          <li class="tl-event"><span class="tl-event-date">Aug 13</span><span class="tl-event-desc">@404 club with @allenvee</span><span class="tl-event-city">Wuhan</span></li>
-          <li class="tl-event"><span class="tl-event-date">Aug 05</span><span class="tl-event-desc">@Minininiklub with @Syndicate, @Vonatawk</span><span class="tl-event-city">Wuhan</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jul 22</span><span class="tl-event-desc">@Floso with @After_Co, @DOKEDO</span><span class="tl-event-city">Beijing</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jul 08</span><span class="tl-event-desc">@dadabarbeijing with @ANOHITO, @Yilun</span><span class="tl-event-city">Beijing</span></li>
-          <li class="tl-event"><span class="tl-event-date">Jul 02</span><span class="tl-event-desc">@WINETAIL with @FemaleP</span><span class="tl-event-city">Beijing</span></li>
-          <li class="tl-event"><span class="tl-event-date">May 13</span><span class="tl-event-desc">@bananaradio with @swimsoul</span><span class="tl-event-city">Los Angeles</span></li>
-        </ul>
-      </div>
-    </div>
-
+  <div class="journey-stats reveal">
+    <div><div class="j-stat-num" id="stat-cities">00</div><div class="j-stat-label">Cities</div></div>
+    <div><div class="j-stat-num" id="stat-countries">00</div><div class="j-stat-label">Countries</div></div>
+    <div><div class="j-stat-num" id="stat-shows">00</div><div class="j-stat-label">Shows</div></div>
+    <div><div class="j-stat-num" id="stat-years">00</div><div class="j-stat-label">Years on tour</div></div>
   </div>
+
+  <div class="journey-filter reveal" id="journey-filter">
+    <button class="j-filter-btn active" data-year="all">All</button>
+    <button class="j-filter-btn" data-year="2026">2026</button>
+    <button class="j-filter-btn" data-year="2025">2025</button>
+    <button class="j-filter-btn" data-year="2024">2024</button>
+    <button class="j-filter-btn" data-year="2023">2023</button>
+  </div>
+
+  <div class="journey-stage reveal" data-delay="1">
+    <div class="map-wrap">
+      <svg id="map-svg" class="map-svg" viewBox="0 0 1000 500" preserveAspectRatio="xMidYMid meet"></svg>
+      <div class="map-corner tl">ATLAS · WORLD</div>
+      <div class="map-corner tr">EQUIRECT · 1:1</div>
+      <div class="map-corner br" id="map-coords">— · —</div>
+    </div>
+
+    <div class="passport">
+      <div class="pass-inner" id="pass-inner">
+        <div class="pass-face front" id="pass-front"></div>
+        <div class="pass-face back" id="pass-back"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stamps-strip reveal" id="stamps-strip"></div>
 </section>
 
 <!-- GALLERY -->
@@ -487,10 +467,14 @@ document.addEventListener('mousemove', e => { mx=e.clientX; my=e.clientY; cur.st
   ring.style.left=rx+'px'; ring.style.top=ry+'px';
   requestAnimationFrame(animRing);
 })();
-document.querySelectorAll('a,button,.gallery-item,.tl-year-btn').forEach(el=>{
-  el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
-  el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
-});
+function bindHover(root){
+  (root||document).querySelectorAll('a,button,.gallery-item,.pin,.stamp-card,.j-filter-btn,.pass-nav-btn').forEach(el=>{
+    if(el.__hb) return; el.__hb = 1;
+    el.addEventListener('mouseenter',()=>document.body.classList.add('hovering'));
+    el.addEventListener('mouseleave',()=>document.body.classList.remove('hovering'));
+  });
+}
+bindHover();
 
 /* ====== NAV SCROLL ====== */
 window.addEventListener('scroll',()=>{
@@ -544,13 +528,301 @@ document.querySelectorAll('.reveal').forEach(el=>observer.observe(el));
   draw();
 })();
 
-/* ====== TIMELINE ====== */
-function toggleYear(btn){
-  const ev = btn.nextElementSibling;
-  const open = btn.classList.contains('open');
-  btn.classList.toggle('open',!open);
-  ev.classList.toggle('open',!open);
-}
+/* ====== WORLDMAP JOURNEY ====== */
+(function(){
+  const CITIES = {
+    'New York':    { lat: 40.7128,  lon: -74.0060,  country:'United States', flag:'🇺🇸' },
+    'Los Angeles': { lat: 34.0522,  lon: -118.2437, country:'United States', flag:'🇺🇸' },
+    'Tampa':       { lat: 27.9506,  lon: -82.4572,  country:'United States', flag:'🇺🇸' },
+    'Boston':      { lat: 42.3601,  lon: -71.0589,  country:'United States', flag:'🇺🇸' },
+    'Beijing':     { lat: 39.9042,  lon: 116.4074,  country:'China',         flag:'🇨🇳' },
+    'Tianjin':     { lat: 39.0842,  lon: 117.2009,  country:'China',         flag:'🇨🇳' },
+    'Shanghai':    { lat: 31.2304,  lon: 121.4737,  country:'China',         flag:'🇨🇳' },
+    'Shenzhen':    { lat: 22.5431,  lon: 114.0579,  country:'China',         flag:'🇨🇳' },
+    'Wuhan':       { lat: 30.5928,  lon: 114.3055,  country:'China',         flag:'🇨🇳' },
+    'Hong Kong':   { lat: 22.3193,  lon: 114.1694,  country:'Hong Kong',     flag:'🇭🇰' }
+  };
+
+  const EVENTS = [
+    { d:'2026-04-17', city:'New York',   t:'@markethotel' },
+    { d:'2026-04-11', city:'New York',   t:'@nightclub101' },
+    { d:'2026-02-20', city:'New York',   t:'@moodringnyc' },
+    { d:'2026-02-15', city:'New York',   t:'<a href="https://www.instagram.com/notyetdesign_/" target="_blank">@notyetdesign_</a> &amp; <a href="https://www.instagram.com/common.wavs/" target="_blank">@common.wavs</a>' },
+    { d:'2026-01-30', city:'Los Angeles',t:'@theslipperclutch' },
+    { d:'2025-07-12', city:'Tampa',      t:'@Technosnobs' },
+    { d:'2025-05-10', city:'New York',   t:'@H0l0 with @agape_music' },
+    { d:'2025-04-06', city:'Boston',     t:'@Manray with @adapt' },
+    { d:'2025-01-29', city:'New York',   t:'@happyfunhideaway' },
+    { d:'2025-01-25', city:'New York',   t:'@elsewhere with @bias.nyc' },
+    { d:'2025-01-11', city:'New York',   t:'@fuzhousisters' },
+    { d:'2024-12-09', city:'New York',   t:'@markethotel with @WATF!' },
+    { d:'2024-11-09', city:'New York',   t:'@Standard Nerds Club' },
+    { d:'2024-10-04', city:'New York',   t:'@rash_nyc' },
+    { d:'2024-09-11', city:'New York',   t:'@BYEBYETECHNO with @Parsons School of Design' },
+    { d:'2024-07-26', city:'Shenzhen',   t:'@hypebeast with @antigeneral' },
+    { d:'2024-07-21', city:'Shenzhen',   t:'@oilclub with @dawless_teahouse' },
+    { d:'2024-07-20', city:'Hong Kong',  t:'@Animatoaudio with @dawless_teahouse' },
+    { d:'2024-07-14', city:'Shanghai',   t:'@byybradio' },
+    { d:'2024-07-13', city:'Shanghai',   t:'@SofuArea' },
+    { d:'2024-06-29', city:'Shenzhen',   t:'@whyclub with @durante_max' },
+    { d:'2024-06-28', city:'Wuhan',      t:'@mininini with @durante_max' },
+    { d:'2024-06-26', city:'Shanghai',   t:'@all_club_' },
+    { d:'2024-06-22', city:'Shanghai',   t:'with @whitesabbathh' },
+    { d:'2024-06-21', city:'Shanghai',   t:'@cedarshanghai with @chromivsn + 5 VJs' },
+    { d:'2024-06-19', city:'Shanghai',   t:'with @moodswing.exp' },
+    { d:'2024-06-16', city:'Shanghai',   t:'@dirtyhousesh' },
+    { d:'2024-06-01', city:'Shanghai',   t:'@cedarshanghai with @liu3hhh' },
+    { d:'2024-05-03', city:'New York',   t:'@purgtory.bk with <a href="https://www.instagram.com/connexions.nyc/" target="_blank">@connexions.nyc</a>' },
+    { d:'2024-04-25', city:'New York',   t:'@bosanovacivicclub' },
+    { d:'2024-04-20', city:'New York',   t:'@Afoxcollective with @Girl_irl, @whitesabbath' },
+    { d:'2024-04-11', city:'New York',   t:'@iidrr distortion party' },
+    { d:'2024-03-27', city:'New York',   t:'@xpizza closing program with <a href="https://www.instagram.com/senaidaxoxo/" target="_blank">@senaidaxoxo</a>' },
+    { d:'2024-03-13', city:'New York',   t:'@moodringnyc with @dugout.radio' },
+    { d:'2024-03-09', city:'New York',   t:'@sojourner_gallery with @byebyetechno' },
+    { d:'2024-02-29', city:'New York',   t:'@bar.jade.bk with @tysmrecords' },
+    { d:'2024-02-23', city:'New York',   t:'@byebyetechno LAUNCH PARTY' },
+    { d:'2024-02-15', city:'New York',   t:'@noflex.nyc with @SUPESBASE, @SpotteToad' },
+    { d:'2024-02-10', city:'New York',   t:'@wearethefutureparty with <a href="https://www.instagram.com/vidalibremusic/" target="_blank">@vidalibremusic</a>' },
+    { d:'2024-02-08', city:'New York',   t:'@Vonbarnyc with @under_bleecker_street' },
+    { d:'2024-02-06', city:'New York',   t:'@xpizza with @KIDC, @Waterscape' },
+    { d:'2024-01-20', city:'New York',   t:'@cccradio with @annielee, @samisos_a' },
+    { d:'2024-01-13', city:'Beijing',    t:'@BBBbar with @JacksonLee, @MA JIA' },
+    { d:'2024-01-12', city:'Tianjin',    t:'@Gasclub with @mr.d.mouse, @cisco' },
+    { d:'2023-12-31', city:'Wuhan',      t:'@Minininiklub with @mr.d.mouse' },
+    { d:'2023-11-01', city:'New York',   t:'@ccc.radio with @michelle_kay, <a href="https://www.instagram.com/ramsey.neville/" target="_blank">@ramsey.neville</a>' },
+    { d:'2023-08-13', city:'Wuhan',      t:'@404 club with @allenvee' },
+    { d:'2023-08-05', city:'Wuhan',      t:'@Minininiklub with @Syndicate, @Vonatawk' },
+    { d:'2023-07-22', city:'Beijing',    t:'@Floso with @After_Co, @DOKEDO' },
+    { d:'2023-07-08', city:'Beijing',    t:'@dadabarbeijing with @ANOHITO, @Yilun' },
+    { d:'2023-07-02', city:'Beijing',    t:'@WINETAIL with @FemaleP' },
+    { d:'2023-05-13', city:'Los Angeles',t:'@bananaradio with @swimsoul' }
+  ];
+
+  // Heavily simplified continent silhouettes (equirectangular, viewBox 1000x500)
+  const LAND_PATHS = [
+    'M158,90 L260,75 L300,92 L302,140 L282,170 L222,205 L196,205 L166,180 L140,160 L130,130 Z',
+    'M315,55 L355,50 L370,80 L355,110 L320,105 L305,80 Z',
+    'M275,225 L320,225 L335,260 L330,310 L300,355 L275,365 L260,335 L255,290 L260,255 Z',
+    'M455,90 L545,80 L555,115 L520,140 L470,140 L455,115 Z',
+    'M460,160 L540,155 L565,200 L555,260 L520,310 L490,320 L465,290 L455,235 L450,195 Z',
+    'M555,75 L820,70 L860,110 L850,160 L800,200 L755,205 L700,200 L640,170 L585,160 L555,125 Z',
+    'M695,180 L735,180 L730,225 L710,235 L695,210 Z',
+    'M790,205 L830,200 L840,235 L825,260 L800,250 L788,225 Z',
+    'M820,310 L900,300 L920,335 L885,360 L825,355 L815,330 Z',
+    'M50,475 L950,475 L950,495 L50,495 Z'
+  ];
+
+  const proj = (lat, lon) => ({
+    x: (lon + 180) / 360 * 1000,
+    y: (90 - lat) / 180 * 500
+  });
+
+  const svgEl = (n, attrs) => {
+    const e = document.createElementNS('http://www.w3.org/2000/svg', n);
+    for (const k in (attrs||{})) e.setAttribute(k, attrs[k]);
+    return e;
+  };
+
+  const svg = document.getElementById('map-svg');
+  const passInner = document.getElementById('pass-inner');
+  const passFront = document.getElementById('pass-front');
+  const passBack  = document.getElementById('pass-back');
+  const stampsStrip = document.getElementById('stamps-strip');
+  const filterBar = document.getElementById('journey-filter');
+  const coordsEl  = document.getElementById('map-coords');
+
+  let currentYear = 'all';
+  let currentCity = 'New York';
+  let flipState = false;
+
+  function buildMap() {
+    svg.innerHTML = '';
+    const gG = svgEl('g');
+    for (let lat = -60; lat <= 60; lat += 30) {
+      const y = (90 - lat) / 180 * 500;
+      gG.appendChild(svgEl('line', { class:'grat', x1:0, x2:1000, y1:y, y2:y }));
+    }
+    for (let lon = -150; lon <= 150; lon += 30) {
+      const x = (lon + 180) / 360 * 1000;
+      gG.appendChild(svgEl('line', { class:'grat', x1:x, x2:x, y1:0, y2:500 }));
+    }
+    svg.appendChild(gG);
+
+    const lG = svgEl('g');
+    LAND_PATHS.forEach(d => lG.appendChild(svgEl('path', { class:'land', d })));
+    svg.appendChild(lG);
+
+    svg.appendChild(svgEl('g', { id:'arc-group' }));
+
+    const pinG = svgEl('g', { id:'pin-group' });
+    Object.keys(CITIES).forEach(name => {
+      const c = CITIES[name];
+      const p = proj(c.lat, c.lon);
+      const g = svgEl('g', { class:'pin', 'data-city':name, transform:`translate(${p.x},${p.y})` });
+      g.appendChild(svgEl('circle', { class:'pin-halo', cx:0, cy:0, r:4 }));
+      const halo2 = svgEl('circle', { class:'pin-halo', cx:0, cy:0, r:4 });
+      halo2.style.animationDelay = '1.3s';
+      g.appendChild(halo2);
+      g.appendChild(svgEl('circle', { class:'pin-dot', cx:0, cy:0, r:3 }));
+      const lbl = svgEl('text', { class:'pin-label', x:7, y:-7 });
+      lbl.textContent = name.toUpperCase();
+      g.appendChild(lbl);
+      g.addEventListener('click', () => selectCity(name));
+      g.addEventListener('mouseenter', () => {
+        coordsEl.textContent = `${Math.abs(c.lat).toFixed(2)}° ${c.lat>=0?'N':'S'}  ·  ${Math.abs(c.lon).toFixed(2)}° ${c.lon>=0?'E':'W'}`;
+      });
+      pinG.appendChild(g);
+    });
+    svg.appendChild(pinG);
+    bindHover(svg);
+  }
+
+  function filtered() {
+    if (currentYear === 'all') return EVENTS;
+    return EVENTS.filter(e => e.d.startsWith(currentYear));
+  }
+
+  function drawArcs() {
+    const arcG = document.getElementById('arc-group');
+    arcG.innerHTML = '';
+    const list = filtered().slice().sort((a,b) => a.d.localeCompare(b.d));
+    const pts = list.map(e => proj(CITIES[e.city].lat, CITIES[e.city].lon));
+    for (let i = 0; i < pts.length - 1; i++) {
+      const a = pts[i], b = pts[i+1];
+      const dist = Math.hypot(b.x-a.x, b.y-a.y);
+      if (dist < 4) continue;
+      const mx = (a.x + b.x) / 2;
+      const my = (a.y + b.y) / 2 - Math.min(140, dist * 0.32);
+      arcG.appendChild(svgEl('path', { class:'arc', d:`M${a.x},${a.y} Q${mx},${my} ${b.x},${b.y}` }));
+    }
+  }
+
+  function updateActivePin() {
+    document.querySelectorAll('.pin').forEach(p => {
+      p.classList.toggle('active', p.dataset.city === currentCity);
+    });
+  }
+
+  function fmtDate(d) {
+    const m = ['JAN','FEB','MAR','APR','MAY','JUN','JUL','AUG','SEP','OCT','NOV','DEC'];
+    const [y,mo,da] = d.split('-');
+    return `${m[+mo-1]} ${da} '${y.slice(2)}`;
+  }
+
+  function cityCard(name) {
+    const c = CITIES[name];
+    if (!c) return '';
+    const events = filtered().filter(e => e.city === name).sort((a,b) => b.d.localeCompare(a.d));
+    const allEvents = EVENTS.filter(e => e.city === name);
+    const lat = `${Math.abs(c.lat).toFixed(4)}° ${c.lat >= 0 ? 'N' : 'S'}`;
+    const lon = `${Math.abs(c.lon).toFixed(4)}° ${c.lon >= 0 ? 'E' : 'W'}`;
+    const eventsHtml = events.length
+      ? events.map(e => `<div class="pass-event"><span class="pass-event-d">${fmtDate(e.d)}</span><span class="pass-event-x">${e.t}</span></div>`).join('')
+      : `<div class="pass-event"><span class="pass-event-d">—</span><span class="pass-event-x">No shows in this filter.</span></div>`;
+    const idx = Object.keys(CITIES).indexOf(name) + 1;
+    const total = Object.keys(CITIES).length;
+    return `
+      <div class="pass-stamp-row">
+        <div class="pass-stamp">Visa · Sound</div>
+        <div class="pass-flag">${c.flag}</div>
+      </div>
+      <div class="pass-city">${name}</div>
+      <div class="pass-country">${c.country}</div>
+      <div class="pass-coords">${lat} · ${lon}</div>
+      <div class="pass-meta">
+        <div><div class="pass-meta-num">${allEvents.length}</div><div class="pass-meta-lab">Total sets</div></div>
+        <div><div class="pass-meta-num">${events.length}</div><div class="pass-meta-lab">${currentYear==='all'?'All-time':currentYear}</div></div>
+      </div>
+      <div class="pass-events">${eventsHtml}</div>
+      <div class="pass-nav">
+        <button class="pass-nav-btn" data-nav="prev">◂ Prev</button>
+        <span class="pass-page">${String(idx).padStart(2,'0')} / ${String(total).padStart(2,'0')}</span>
+        <button class="pass-nav-btn" data-nav="next">Next ▸</button>
+      </div>
+    `;
+  }
+
+  function selectCity(name) {
+    if (name === currentCity) return;
+    currentCity = name;
+    flipState = !flipState;
+    const targetFace = flipState ? passBack : passFront;
+    targetFace.innerHTML = cityCard(name);
+    passInner.classList.toggle('flip', flipState);
+    bindCardActions();
+    bindHover(targetFace);
+    updateActivePin();
+    updateStamps();
+  }
+
+  function bindCardActions() {
+    document.querySelectorAll('.pass-nav-btn').forEach(b => {
+      b.onclick = () => {
+        const keys = Object.keys(CITIES);
+        let i = keys.indexOf(currentCity);
+        i += b.dataset.nav === 'next' ? 1 : -1;
+        if (i < 0) i = keys.length - 1;
+        if (i >= keys.length) i = 0;
+        selectCity(keys[i]);
+      };
+    });
+  }
+
+  function updateStats() {
+    const list = filtered();
+    const cities = new Set(list.map(e => e.city));
+    const countries = new Set(list.map(e => CITIES[e.city] && CITIES[e.city].country));
+    const allYears = new Set(EVENTS.map(e => e.d.slice(0,4)));
+    document.getElementById('stat-cities').textContent = String(cities.size).padStart(2,'0');
+    document.getElementById('stat-countries').textContent = String(countries.size).padStart(2,'0');
+    document.getElementById('stat-shows').textContent = String(list.length).padStart(2,'0');
+    document.getElementById('stat-years').textContent = String(allYears.size).padStart(2,'0');
+  }
+
+  function updateStamps() {
+    stampsStrip.innerHTML = '';
+    const list = filtered();
+    const counts = {};
+    list.forEach(e => counts[e.city] = (counts[e.city] || 0) + 1);
+    Object.keys(CITIES).forEach(name => {
+      const n = counts[name] || 0;
+      if (n === 0 && currentYear !== 'all') return;
+      const card = document.createElement('div');
+      card.className = 'stamp-card' + (name === currentCity ? ' active' : '');
+      card.innerHTML = `
+        <div class="stamp-city">${name}</div>
+        <div class="stamp-meta"><span>${CITIES[name].country}</span><span>${n} ${n===1?'set':'sets'}</span></div>
+      `;
+      card.onclick = () => selectCity(name);
+      stampsStrip.appendChild(card);
+    });
+    bindHover(stampsStrip);
+  }
+
+  filterBar.addEventListener('click', e => {
+    const b = e.target.closest('.j-filter-btn');
+    if (!b) return;
+    filterBar.querySelectorAll('.j-filter-btn').forEach(x => x.classList.remove('active'));
+    b.classList.add('active');
+    currentYear = b.dataset.year;
+    drawArcs();
+    updateStats();
+    updateStamps();
+    const face = flipState ? passBack : passFront;
+    face.innerHTML = cityCard(currentCity);
+    bindCardActions();
+    bindHover(face);
+  });
+
+  buildMap();
+  drawArcs();
+  updateStats();
+  passFront.innerHTML = cityCard(currentCity);
+  bindCardActions();
+  bindHover(passFront);
+  updateActivePin();
+  updateStamps();
+})();
 
 /* ====== LIGHTBOX ====== */
 function lboxOpen(item){
