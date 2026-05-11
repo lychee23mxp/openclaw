@@ -31,6 +31,11 @@ body::after {
   49%{background-position:8% -28%} 66%{background-position:-6% 28%} 83%{background-position:18% 0} 100%{background-position:0 0}
 }
 
+/* GHOST CURSOR */
+#ghost-cursor { position:fixed; inset:0; pointer-events:none; z-index:9985; }
+#ghost-cursor > canvas { display:block; width:100%; height:100%; background:transparent; }
+@media(max-width:768px){ #ghost-cursor { display:none; } }
+
 /* CURSOR */
 #cur { width:8px; height:8px; background:#fff; border-radius:50%; position:fixed; pointer-events:none; z-index:9999; transform:translate(-50%,-50%); transition:width .12s,height .12s; }
 #cur-ring { width:28px; height:28px; border:1px solid rgba(255,255,255,.4); border-radius:50%; position:fixed; pointer-events:none; z-index:9998; transform:translate(-50%,-50%); transition:width .18s,height .18s,border-color .2s; }
@@ -234,6 +239,7 @@ footer a:hover { color:#fff; }
 </head>
 <body>
 
+<div id="ghost-cursor"></div>
 <div id="cur"></div>
 <div id="cur-ring"></div>
 
@@ -567,6 +573,26 @@ document.getElementById('lbox').addEventListener('click',function(e){
   if(e.target===this) lboxClose();
 });
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') lboxClose(); });
+</script>
+
+<script type="module">
+import { setupGhostCursor } from './ghost-cursor.js';
+const host = document.getElementById('ghost-cursor');
+if (host) {
+  setupGhostCursor(host, {
+    color: '#B497CF',
+    brightness: 1,
+    edgeIntensity: 0,
+    trailLength: 15,
+    inertia: 0.1,
+    grainIntensity: 0.24,
+    bloomStrength: 0.1,
+    bloomRadius: 1.0,
+    bloomThreshold: 0.025,
+    fadeDelayMs: 1000,
+    fadeDurationMs: 1500
+  });
+}
 </script>
 </body>
 </html>
