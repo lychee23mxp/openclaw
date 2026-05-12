@@ -575,22 +575,30 @@ document.getElementById('lbox').addEventListener('click',function(e){
 document.addEventListener('keydown',e=>{ if(e.key==='Escape') lboxClose(); });
 </script>
 
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
 <script type="module">
 import { setupGhostCursor } from './ghost-cursor.js';
 const host = document.getElementById('ghost-cursor');
 if (host) {
   setupGhostCursor(host, {
     color: '#B497CF',
-    brightness: 1,
+    brightness: 1.4,
     edgeIntensity: 0,
-    trailLength: 15,
-    inertia: 0.1,
-    grainIntensity: 0.24,
-    bloomStrength: 0.1,
+    trailLength: 18,
+    inertia: 0.15,
+    grainIntensity: 0.12,
+    bloomStrength: 0.35,
     bloomRadius: 1.0,
-    bloomThreshold: 0.025,
-    fadeDelayMs: 1000,
-    fadeDurationMs: 1500
+    bloomThreshold: 0.0,
+    fadeDelayMs: 1200,
+    fadeDurationMs: 1800
   });
 }
 </script>
